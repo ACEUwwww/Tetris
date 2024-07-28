@@ -45,20 +45,20 @@ int collision_detect(int pos_x,int pos_y,int rotation_state, int piece_number){
 }
 /* Judge whether the line is full given py */
 bool isLineFull(int py){
-    for (int px = 0; px < field_width; px ++){
+    for (int px = 1; px < field_width-1; px ++){
         int fi = py*field_width + px;
-        if(field_ptr[fi] ==L' ') return false;
+        if(field_ptr[fi] == 0) return false;
     }
     return true;
 }
 
 int vertical_scroll(int pos_y){
     for (int py = pos_y; py > 0; py--){
-        for (int px = 0; px < field_width; px++){
+        for (int px = 1; px < field_width-1; px++){
             field_ptr[py*field_width+px] = field_ptr[(py-1)*field_width+px];
         }
     }
-    for (int px = 0; px < field_width;px++){
+    for (int px = 1; px < field_width-1;px++){
         field_ptr[px] = L' ';
     }
     return 0;
@@ -124,8 +124,8 @@ int main(){
     square[5].append(L"..X.");
 
     square[6].append(L"....");
-    square[6].append(L"..X.");
-    square[6].append(L".XXX");
+    square[6].append(L".X..");
+    square[6].append(L".XX.");
     square[6].append(L"..X.");
 
 
@@ -186,10 +186,10 @@ int main(){
             /* Judge full line condition */
             for (int py = 0; py < 4; py++){
                 int pos_y = current_y + py;
-                if (isLineFull(pos_y)){
-                    for(int px = 0; px < field_width; px++)
+                if (isLineFull(pos_y) && pos_y >= 0 && pos_y < field_height - 1){
+                    for(int px = 1; px < field_width-1; px++)
                         field_ptr[pos_y*field_width+px] = 8;
-                    for (int x = 0; x < field_width; x++)
+                    for (int x = 1; x < field_width; x++)
                         for (int y = 0; y < field_height; y++)
                             screen[(y + 2)*ScreenWidth + (x + 2)] = L" ABCDEFG=#"[field_ptr[y*field_width+x]];
                     WriteConsoleOutputCharacterW(hConsole, screen, ScreenWidth * ScreenHeight, { 0,0 }, &dwBytesWritten);
