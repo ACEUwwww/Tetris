@@ -146,7 +146,7 @@ int main(){
     int rotate_lock = false;
     int speed_down = 20;
     int speed_count = 0;
-
+    int score = 0;
 
     /* Main game loop */
     while (gameflag){
@@ -182,36 +182,36 @@ int main(){
 
         /* Bottom logic and game over condition*/
         if (!collision_detect(current_x,current_y+1,rotate_state,current_piece)){
-            draw_square(current_x,current_y,rotate_state,current_piece);
-            /* Judge full line condition */
-            for (int py = 0; py < 4; py++){
-                int pos_y = current_y + py;
-                if (isLineFull(pos_y) && pos_y >= 0 && pos_y < field_height - 1){
-                    for(int px = 1; px < field_width-1; px++)
-                        field_ptr[pos_y*field_width+px] = 8;
-                    for (int x = 1; x < field_width; x++)
-                        for (int y = 0; y < field_height; y++)
-                            screen[(y + 2)*ScreenWidth + (x + 2)] = L" ABCDEFG=#"[field_ptr[y*field_width+x]];
-                    WriteConsoleOutputCharacterW(hConsole, screen, ScreenWidth * ScreenHeight, { 0,0 }, &dwBytesWritten);
-                    this_thread::sleep_for(400ms);
-                    vertical_scroll(pos_y);
+            if(speed_count == speed_down){
+                draw_square(current_x,current_y,rotate_state,current_piece);
+                /* Judge full line condition */
+                for (int py = 0; py < 4; py++){
+                    int pos_y = current_y + py;
+                    if (isLineFull(pos_y) && pos_y >= 0 && pos_y < field_height - 1){
+                        for(int px = 1; px < field_width-1; px++)
+                            field_ptr[pos_y*field_width+px] = 8;
+                        for (int x = 1; x < field_width; x++)
+                            for (int y = 0; y < field_height; y++)
+                                screen[(y + 2)*ScreenWidth + (x + 2)] = L" ABCDEFG=#"[field_ptr[y*field_width+x]];
+                        WriteConsoleOutputCharacterW(hConsole, screen, ScreenWidth * ScreenHeight, { 0,0 }, &dwBytesWritten);
+                        this_thread::sleep_for(400ms);
+                        vertical_scroll(pos_y);
+                        score += 25;
+                    }
                 }
-            }
-            if (current_y == 0) gameflag = false;
-            current_x = field_width / 2;
-            current_y = 0;
-            rotate_state = 0;
-            current_piece = getRand(0,6);
+                if (current_y == 0) gameflag = false;
+                current_x = field_width / 2;
+                current_y = 0;
+                rotate_state = 0;
+                current_piece = getRand(0,6);
+                speed_count = 0;
+            } else speed_count++;
 
         }
         else{
             if (speed_count == speed_down){current_y++; speed_count = 0;}
             else speed_count++;
         }
-
-        
-
-
         // Render Output ===============================================
 
         //Drawing ======================================================
@@ -224,7 +224,6 @@ int main(){
         for (int px = 0; px < 4; px++){
             for (int py = 0; py < 4; py++){
                 if (square[current_piece][rotate(px,py,rotate_state)] == L'X')
-
                     screen[(current_y+py+2)*ScreenWidth+current_x+px+2] = current_piece+65;
             }
         }
