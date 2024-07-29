@@ -215,7 +215,8 @@ int main(){
             else speed_count++;
         }
         // Render Output ===============================================
-        
+        swprintf_s(&screen[2 * ScreenWidth + field_width + 6], 16, L"SCORE: %8d", score);
+
         //Drawing ======================================================
         /* Draw the boundary */
         for (int x = 0; x < field_width; x++)
@@ -235,7 +236,7 @@ int main(){
 
     /* Gameover condition */
     CloseHandle(hConsole);
-	cout << "Game Over!!"<< endl;
+	cout << "Game Over!! Your score is :"<< score <<  endl;
 	system("pause");
 	return 0;
 
