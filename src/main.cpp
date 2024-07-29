@@ -59,7 +59,7 @@ int vertical_scroll(int pos_y){
         }
     }
     for (int px = 1; px < field_width-1;px++){
-        field_ptr[px] = L' ';
+        field_ptr[px] = 0;
     }
     return 0;
 }
@@ -145,6 +145,7 @@ int main(){
     bool bKey[4];
     int rotate_lock = false;
     int speed_down = 20;
+    int speed_limit = 5;
     int speed_count = 0;
     int score = 0;
 
@@ -203,8 +204,9 @@ int main(){
                 current_x = field_width / 2;
                 current_y = 0;
                 rotate_state = 0;
-                current_piece = getRand(0,6);
+                current_piece = 0;
                 speed_count = 0;
+                if (!collision_detect(current_x,current_y,rotate_state,current_piece)) gameflag = false;
             } else speed_count++;
 
         }
@@ -213,7 +215,7 @@ int main(){
             else speed_count++;
         }
         // Render Output ===============================================
-
+        
         //Drawing ======================================================
         /* Draw the boundary */
         for (int x = 0; x < field_width; x++)
